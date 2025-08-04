@@ -1,6 +1,7 @@
 package br.com.alura.adopetstore.controller;
 
 import br.com.alura.adopetstore.dto.LoginDTO;
+import br.com.alura.adopetstore.dto.TokenDto;
 import br.com.alura.adopetstore.model.Usuario;
 import br.com.alura.adopetstore.security.TokenService;
 import br.com.alura.adopetstore.service.UsuarioService;
@@ -28,12 +29,12 @@ public class LoginController {
     private UsuarioService service;
 
     @PostMapping
-    public ResponseEntity<String> efetuarLogin(@RequestBody @Valid LoginDTO dto) {
+    public ResponseEntity<TokenDto> efetuarLogin(@RequestBody @Valid LoginDTO dto) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(dto.email(), dto.senha());
         var authentication = manager.authenticate(authenticationToken);
 
         var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
 
-        return ResponseEntity.ok(tokenJWT);
+        return ResponseEntity.ok(new TokenDto(tokenJWT));
     }
 }
