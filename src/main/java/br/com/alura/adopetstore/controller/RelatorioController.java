@@ -1,3 +1,4 @@
+/*
 package br.com.alura.adopetstore.controller;
 
 import br.com.alura.adopetstore.dto.RelatorioEstoque;
@@ -26,4 +27,4 @@ public class RelatorioController {
         var relatorio = service.faturamentoObtido();
         return ResponseEntity.ok(relatorio);
     }
-}
+}*/
