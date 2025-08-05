@@ -4,6 +4,9 @@ import br.com.alura.adopetstore.email.EmailRelatorio;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 @Service
 public class AgendamentoService {
 
@@ -15,12 +18,19 @@ public class AgendamentoService {
         this.emailRelatorio = emailRelatorio;
     }
 
-    @Scheduled(cron = "0 59 19 * * *")
+    @Scheduled(cron = "0 13 20 * * *")
     public void enviarRelatorio() {
         var estoque = relatorioService.infoEstoque();
         var faturamento = relatorioService.faturamentoObtido();
 
-        emailRelatorio.enviar(estoque, faturamento);
+        // Garantia que os 2 vão funcionar juntos
+        CompletableFuture.allOf(estoque, faturamento).join();
+
+        try {
+            emailRelatorio.enviar(estoque.get(), faturamento.get());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }
